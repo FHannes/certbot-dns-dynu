@@ -1,25 +1,30 @@
-#! /usr/bin/env python
-from os import path
+import os
+
 from setuptools import setup
 from setuptools import find_packages
 
-version = "0.0.2"
+version = "0.1.0"
 
 with open('README.md') as f:
     long_description = f.read()
 
 install_requires = [
-    'acme>=0.31.0',
-    'certbot>=0.31.0',
-    'dns-lexicon>=3.2.4,<=3.5.6',
+    'acme>=1.26.0',
+    'certbot>=1.26.0',
+    'dns-lexicon>=3.9.4',
     'dnspython',
     'mock',
-    'setuptools',
-    'zope.interface',
+    'setuptools>=41.6.0',
     'requests'
 ]
 
-here = path.abspath(path.dirname(__file__))
+if not os.environ.get('SNAP_BUILD'):
+    install_requires.extend([
+        'acme>=1.26.0',
+        'certbot>=1.26.0',
+    ])
+else:
+    install_requires.append('packaging')
 
 setup(
     name='certbot-dns-dynu',
@@ -29,10 +34,10 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/bikram990/certbot-dns-dynu',
-    download_url='https://github.com/bikram990/certbot-dns-dynu/archive/refs/tags/0.0.2.tar.gz',
+    download_url=f'https://github.com/bikram990/certbot-dns-dynu/archive/refs/tags/{version}.tar.gz',
     author="Bikramjeet Singh",
     license='Apache License 2.0',
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
+    python_requires='>=3.7',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Plugins',
@@ -40,12 +45,11 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Security',
         'Topic :: System :: Installation/Setup',
@@ -55,16 +59,11 @@ setup(
     ],
 
     packages=find_packages(),
+    include_package_data=True,
     install_requires=install_requires,
-
-    # extras_require={
-    #     'docs': docs_extras,
-    # },
-
     entry_points={
         'certbot.plugins': [
-            'dns-dynu = certbot_dns_dynu.dns_dynu:Authenticator',
+            'dns-dynu = certbot_dns_dynu._internal.dns_dynu:Authenticator',
         ],
     },
-    test_suite='certbot_dns_dynu',
 )

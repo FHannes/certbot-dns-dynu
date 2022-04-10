@@ -1,1 +1,1 @@
-"""Let's Encrypt Dynu DNS plugin"""
+"""Certbot Dynu DNS plugin"""
